@@ -1,5 +1,6 @@
 package com.example.auth;
 
+import com.example.auth.entity.CustomUserDetails;
 import com.example.auth.entity.UserEntity;
 import com.example.auth.repo.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,8 @@ public class UserService implements UserDetailsService {
         user1.setUsername("user1");
         user1.setPassword(passwordEncoder
                 .encode("password"));
+        user1.setEmail("user1@a.a");
+        user1.setPhone("010-asdf-zxcv");
         this.repository.save(user1);
     }
 
@@ -40,10 +43,11 @@ public class UserService implements UserDetailsService {
                 repository.findByUsername(username);
         if (optionalUser.isEmpty())
             throw new UsernameNotFoundException(username);
-        return User
-                .withUsername(username)
-                .password(optionalUser.get().getPassword())
-                .build();
+//        return User
+//                .withUsername(username)
+//                .password(optionalUser.get().getPassword())
+//                .build();
+        return CustomUserDetails.fromEntity(optionalUser.get());
     }
 
     public void createUser(String username, String password, String passCheck) {

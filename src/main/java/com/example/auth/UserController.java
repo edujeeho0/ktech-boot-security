@@ -1,7 +1,9 @@
 package com.example.auth;
 
+import com.example.auth.entity.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,7 +43,11 @@ public class UserController {
             Authentication authentication
     ) {
         log.info(authentication.getName());
-        log.info(((User) authentication.getPrincipal()).getUsername());
+//        log.info(((User) authentication.getPrincipal()).getUsername());
+        if (authentication.getPrincipal() instanceof CustomUserDetails details) {
+            log.info(details.getEmail());
+            log.info(details.getPhone());
+        }
         return "my-profile";
     }
 

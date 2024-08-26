@@ -3,12 +3,14 @@ package com.example.auth;
 import com.example.auth.entity.UserEntity;
 import com.example.auth.repo.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -42,5 +44,18 @@ public class UserService implements UserDetailsService {
                 .withUsername(username)
                 .password(optionalUser.get().getPassword())
                 .build();
+    }
+
+    public void createUser(String username, String password, String passCheck) {
+        if (userExists(username) || !password.equals(passCheck))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        UserEntity newUser = new UserEntity();
+        newUser.setUsername(username);
+        newUser.setPassword(passwordEncoder.encode(password));
+        repository.save(newUser);
+    }
+
+    public boolean userExists(String username) {
+        return repository.existsByUsername(username);
     }
 }

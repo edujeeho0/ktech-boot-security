@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
@@ -18,13 +19,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UserController {
     private final PasswordEncoder passwordEncoder;
 //    private final UserDetailsManager manager;
+    private final UserService service;
 
     public UserController(
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
 //            UserDetailsManager manager
+            UserService service
     ) {
         this.passwordEncoder = passwordEncoder;
 //        this.manager = manager;
+        this.service = service;
     }
 
     @GetMapping("login")
@@ -59,6 +63,7 @@ public class UserController {
 //            manager.createUser(User.withUsername(username)
 //                    .password(passwordEncoder.encode(password))
 //                    .build());
+            service.createUser(username, password, passwordCheck);
         }
         return "redirect:/users/login";
     }

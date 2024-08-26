@@ -27,10 +27,10 @@ public class WebSecurityConfig {
                     // 인증이 된 사용자만 허용하는 URL
                     auth.requestMatchers("/users/my-profile")
                             .authenticated();
+                    auth.requestMatchers("/users/register")
+                            .anonymous();
 //                    auth.requestMatchers("/")
 //                            .permitAll();
-//                    auth.requestMatchers("/not-login-only")
-//                            .anonymous();
 //                    auth.requestMatchers("/nobody")
 //                            .denyAll();
                 })
@@ -40,7 +40,12 @@ public class WebSecurityConfig {
                         .defaultSuccessUrl("/users/my-profile")
                         .failureUrl("/users/login?fail")
                         .permitAll()
-                );
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/users/logout")
+                        .logoutSuccessUrl("/users/login")
+                )
+        ;
 
         // before 6.1
         /*

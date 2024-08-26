@@ -58,15 +58,15 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public UserDetailsManager userDetailsManager(
-            PasswordEncoder passwordEncoder
-    ) {
-        UserDetails user1 = User.withUsername("user1")
-                .password(passwordEncoder.encode("password"))
-                .build();
-        return new InMemoryUserDetailsManager(user1);
-    }
+//    @Bean
+//    public UserDetailsManager userDetailsManager(
+//            PasswordEncoder passwordEncoder
+//    ) {
+//        UserDetails user1 = User.withUsername("user1")
+//                .password(passwordEncoder.encode("password"))
+//                .build();
+//        return new InMemoryUserDetailsManager(user1);
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

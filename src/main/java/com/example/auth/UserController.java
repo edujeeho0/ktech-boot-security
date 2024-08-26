@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("users")
 public class UserController {
     private final PasswordEncoder passwordEncoder;
-    private final UserDetailsManager manager;
+//    private final UserDetailsManager manager;
 
     public UserController(
-            PasswordEncoder passwordEncoder,
-            UserDetailsManager manager
+            PasswordEncoder passwordEncoder
+//            UserDetailsManager manager
     ) {
         this.passwordEncoder = passwordEncoder;
-        this.manager = manager;
+//        this.manager = manager;
     }
 
     @GetMapping("login")
@@ -56,9 +56,9 @@ public class UserController {
             String passwordCheck
     ) {
         if (password.equals(passwordCheck)) {
-            manager.createUser(User.withUsername(username)
-                    .password(passwordEncoder.encode(password))
-                    .build());
+//            manager.createUser(User.withUsername(username)
+//                    .password(passwordEncoder.encode(password))
+//                    .build());
         }
         return "redirect:/users/login";
     }

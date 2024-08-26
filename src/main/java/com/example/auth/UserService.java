@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,9 +15,19 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class UserService implements UserDetailsService {
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository repository;
-    public UserService(UserRepository repository) {
+    public UserService(
+            PasswordEncoder passwordEncoder,
+            UserRepository repository
+    ) {
+        this.passwordEncoder = passwordEncoder;
         this.repository = repository;
+        UserEntity user1 = new UserEntity();
+        user1.setUsername("user1");
+        user1.setPassword(passwordEncoder
+                .encode("password"));
+        this.repository.save(user1);
     }
 
     @Override

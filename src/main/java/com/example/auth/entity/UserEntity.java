@@ -3,6 +3,7 @@ package com.example.auth.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -13,9 +14,13 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     private String username;
+    @Setter
     private String password;
 
+    @Setter
     private String email;
+    @Setter
     private String phone;
 }

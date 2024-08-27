@@ -2,6 +2,7 @@ package com.example.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
@@ -29,6 +30,13 @@ public class WebSecurityConfig {
                             .authenticated();
                     auth.requestMatchers("/users/register")
                             .anonymous();
+//                    auth.requestMatchers(HttpMethod.POST, "/articles")
+//                            .authenticated();
+//                    auth.requestMatchers(HttpMethod.GET, "/articles")
+//                            .permitAll();
+                    // /articles, /articles/1, /articles/1/update
+                    auth.requestMatchers("/articles/**")
+                            .authenticated();
 //                    auth.requestMatchers("/")
 //                            .permitAll();
 //                    auth.requestMatchers("/nobody")

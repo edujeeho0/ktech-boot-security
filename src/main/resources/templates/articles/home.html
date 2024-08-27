@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Articles</title>
+</head>
+<body>
+<h1>Articles</h1>
+<a href="/articles/create">Write new article</a>
+<hr>
+<!-- 게시글이 하나도 없을 때 -->
+<div th:if="${articles.isEmpty()}">
+  <p>No articles here</p>
+</div>
+<!-- 게시글이 하나라도 있을 때-->
+<div
+        th:unless="${articles.isEmpty()}"
+        th:each="article: ${articles}"
+>
+  <h3>[[${article.id}]]. [[${article.title}]]</h3>
+  <p>Writer: [[${article.writer.username}]]</p>
+  <a th:href="@{/articles/{id} (id=${article.id})}">Read</a>
+</div>
+</body>
+</html>

@@ -43,11 +43,31 @@ public class JwtTokenUtils {
                 // 이 JWT가 언제 생성되었는지
                 .setIssuedAt(Date.from(now))
                 // 이 JWT가 언제 만료되는지
-                .setExpiration(Date.from(now.plusSeconds(60 * 60 * 24)));
+//                .setExpiration(Date.from(now.plusSeconds(60 * 60 * 24)));
+                .setExpiration(Date.from(now.plusSeconds(10)));
 
         return Jwts.builder()
                 .setClaims(jwtClaims)
                 .signWith(this.secretKey)
                 .compact();
+    }
+
+    public boolean validate(String token) {
+        try {
+            Claims claims = jwtParser.parseClaimsJws(token)
+                    .getBody();
+            log.info("subject: {}", claims.getSubject());
+            log.info("issuedAt: {}", claims.getIssuedAt());
+            log.info("expireAt: {}", claims.getExpiration());
+            return true;
+        } catch (Exception e) {
+            log.warn("invalid jwt provided: {}", e.getMessage());
+        }
+        return false;
+    }
+
+    public Claims parseClaims(String token) {
+        return jwtParser.parseClaimsJws(token)
+                .getBody();
     }
 }

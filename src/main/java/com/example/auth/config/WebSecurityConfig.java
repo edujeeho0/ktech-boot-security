@@ -25,7 +25,7 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/no-auth", "/", "/token/test")
+                    auth.requestMatchers("/no-auth", "/", "/token/**")
                             .permitAll();
                     // 인증이 된 사용자만 허용하는 URL
                     auth.requestMatchers("/users/my-profile")

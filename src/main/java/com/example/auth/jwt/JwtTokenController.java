@@ -1,10 +1,10 @@
 package com.example.auth.jwt;
 
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -23,5 +23,25 @@ public class JwtTokenController {
                 .withUsername("alex")
                 .password("adsf")
                 .build());
+    }
+
+    @GetMapping("/validate-test")
+    public String validateTest(
+            @RequestParam("token")
+            String token
+    ) {
+        if (!tokenUtils.validate(token))
+            return "not valid jwt";
+        return "valid jwt";
+    }
+
+    @GetMapping("/validate-header")
+    public Claims validateHeader(
+            @RequestHeader(HttpHeaders.AUTHORIZATION)
+            String authorizationHeader
+    ) {
+        log.info(authorizationHeader);
+        String token = authorizationHeader.split(" ")[1];
+        return tokenUtils.parseClaims(token);
     }
 }

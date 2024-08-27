@@ -43,6 +43,7 @@ public class AlwaysAuthenticatedFilter extends OncePerRequestFilter {
                 );
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
+        // 검사에 통과하지 않아도 다음 필터를 실행한다.
         filterChain.doFilter(request, response);
     }
 }

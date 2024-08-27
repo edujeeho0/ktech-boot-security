@@ -9,3 +9,6 @@ spring:
       ddl-auto: create
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     show-sql: true
+
+jwt:
+  secret: v^K#V@igLXJrBvgY^%gKGy4-GsY51jrun:?C38FY?8h%]t_rd]E@nhL?de3tR>?

@@ -21,10 +21,14 @@ import java.util.ArrayList;
 @Slf4j
 public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtTokenUtils tokenUtils;
+    private final UserDetailsService service;
+
     public JwtTokenFilter(
-            JwtTokenUtils tokenUtils
+            JwtTokenUtils tokenUtils,
+            UserDetailsService service
     ) {
         this.tokenUtils = tokenUtils;
+        this.service = service;
     }
 
     @Override
@@ -73,14 +77,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String username = tokenUtils
                 .parseClaims(jwt)
                 .getSubject();
+        UserDetails userDetails = service.loadUserByUsername(username);
         // 4-3. 사용자 이름을 바탕으로 Authentication을 생성한다.
         AbstractAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(
-                        CustomUserDetails.builder()
-                                .username(username)
-                                .build(),
-                        jwt,
-                        new ArrayList<>()
+                        userDetails,
+                        userDetails.getPassword(),
+                        userDetails.getAuthorities()
                 );
         // 4-4. 인증 정보를 설정한다.
         context.setAuthentication(authentication);

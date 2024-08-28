@@ -11,4 +11,26 @@ public class TestController {
     public String noAuth() {
         return "no auth success!";
     }
+
+    // ROLE에 따라 접근 가능한지 확인
+    @GetMapping("/user-role")
+    public String userRole() {
+        return "userRole";
+    }
+
+    @GetMapping("/admin-role")
+    public String adminRole() {
+        return "adminRole";
+    }
+
+    // AUTHORITY에 따라 접근 가능한지 확인
+    @GetMapping("/read-authority")
+    public String readAuthority() {
+        return "readAuthority";
+    }
+
+    @GetMapping("/write-authority")
+    public String writeAuthority() {
+        return "writeAuthority";
+    }
 }

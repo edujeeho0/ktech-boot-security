@@ -34,6 +34,12 @@ public class UserService implements UserDetailsService {
         user1.setPhone("010-asdf-zxcv");
         user1.setAuthorities("ROLE_USER,READ");
         this.repository.save(user1);
+        UserEntity admin = new UserEntity();
+        admin.setUsername("admin");
+        admin.setPassword(passwordEncoder
+                .encode("password"));
+        admin.setAuthorities("ROLE_ADMIN,READ,WRITE");
+        this.repository.save(admin);
     }
 
     @Override

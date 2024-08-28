@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -21,8 +22,14 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter;
 @Configuration
 public class WebSecurityConfig {
     private final JwtTokenUtils tokenUtils;
-    public WebSecurityConfig(JwtTokenUtils tokenUtils) {
+    private final UserDetailsService detailsService;
+
+    public WebSecurityConfig(
+            JwtTokenUtils tokenUtils,
+            UserDetailsService detailsService
+    ) {
         this.tokenUtils = tokenUtils;
+        this.detailsService = detailsService;
     }
 
     @Bean
@@ -40,10 +47,16 @@ public class WebSecurityConfig {
                                 .authenticated();
                         auth.requestMatchers("/users/register")
                                 .anonymous();
-//                        auth.requestMatchers("")
-//                                .hasRole();
-//                        auth.requestMatchers("")
-//                                .hasAuthority();
+                        // ROLE에 따른 접근 권한
+                        auth.requestMatchers("/user-role")
+                                .hasRole("USER");
+                        auth.requestMatchers("/admin-role")
+                                .hasRole("ADMIN");
+                        // AUTHORITY에 따른 접근 권한
+                        auth.requestMatchers("/read-authority")
+                                .hasAuthority("READ");
+                        auth.requestMatchers("/write-authority")
+                                .hasAuthority("WRITE");
                         // /articles, /articles/1, /articles/1/update
                         auth.requestMatchers("/articles/**", "/token/is-authenticated")
                                 .authenticated();
@@ -62,7 +75,10 @@ public class WebSecurityConfig {
 
                 .addFilterBefore(
 //                        new AlwaysAuthenticatedFilter(),
-                        new JwtTokenFilter(tokenUtils),
+                        new JwtTokenFilter(
+                                tokenUtils,
+                                detailsService
+                        ),
                         AuthorizationFilter.class
                 )
                 .sessionManagement(session -> session
@@ -90,8 +106,8 @@ public class WebSecurityConfig {
 //        return new InMemoryUserDetailsManager(user1);
 //    }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 }

@@ -44,7 +44,7 @@ public class JwtTokenUtils {
                 .setIssuedAt(Date.from(now))
                 // 이 JWT가 언제 만료되는지
 //                .setExpiration(Date.from(now.plusSeconds(60 * 60 * 24)));
-                .setExpiration(Date.from(now.plusSeconds(60)));
+                .setExpiration(Date.from(now.plusSeconds(60 * 60)));
 
         return Jwts.builder()
                 .setClaims(jwtClaims)

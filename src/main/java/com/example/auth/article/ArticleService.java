@@ -6,6 +6,7 @@ import com.example.auth.entity.UserEntity;
 import com.example.auth.repo.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,9 +28,12 @@ public class ArticleService {
 
     public void create(
             String title,
-            String content,
-            String username
+            String content
     ) {
+        String username = SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getName();
+
         Optional<UserEntity> user =
                 userRepository.findByUsername(username);
         if (user.isEmpty())

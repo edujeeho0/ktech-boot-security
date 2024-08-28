@@ -37,10 +37,9 @@ public class ArticleController {
             @RequestParam("title")
             String title,
             @RequestParam("content")
-            String content,
-            Authentication authentication
+            String content
     ) {
-        service.create(title, content, authentication.getName());
+        service.create(title, content);
         return "redirect:/articles";
     }
 }

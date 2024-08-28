@@ -76,4 +76,31 @@ public class JwtTokenController {
             return "not valid jwt";
         return "valid jwt";
     }
+
+    @GetMapping("/validate")
+    public Claims validate(
+            @RequestHeader(value = "Authorization", required = false)
+            // Bearer <jwt 문자열>
+            String authHeader
+    ) {
+        if (authHeader == null)
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        String[] headerSplit = authHeader.split(" ");
+        // 잘못된 헤더 값이 입력되었을 때
+        if (headerSplit.length != 2 || !headerSplit[0].equals("Bearer"))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+
+        // headerSplit = { "Bearer", "jwt" };
+        // JWT가 잘못되었을 때
+        String jwt = headerSplit[1];
+        if (!tokenUtils.validate(jwt))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+
+        return tokenUtils.parseClaims(jwt);
+    }
+
+    @GetMapping("is-authenticated")
+    public String isAuthenticated() {
+        return "Success";
+    }
 }

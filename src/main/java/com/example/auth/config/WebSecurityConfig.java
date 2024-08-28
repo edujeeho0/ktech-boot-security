@@ -1,11 +1,14 @@
 package com.example.auth.config;
 
 import com.example.auth.filters.AlwaysAuthenticatedFilter;
+import com.example.auth.jwt.JwtTokenFilter;
+import com.example.auth.jwt.JwtTokenUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +20,11 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
 @Configuration
 public class WebSecurityConfig {
+    private final JwtTokenUtils tokenUtils;
+    public WebSecurityConfig(JwtTokenUtils tokenUtils) {
+        this.tokenUtils = tokenUtils;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http
@@ -25,7 +33,7 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/no-auth", "/", "/token/**", "/error")
+                    auth.requestMatchers("/no-auth", "/", "/token/issue", "/error")
                             .permitAll();
                     // 인증이 된 사용자만 허용하는 URL
                     auth.requestMatchers("/users/my-profile")
@@ -37,7 +45,7 @@ public class WebSecurityConfig {
 //                    auth.requestMatchers(HttpMethod.GET, "/articles")
 //                            .permitAll();
                     // /articles, /articles/1, /articles/1/update
-                    auth.requestMatchers("/articles/**")
+                    auth.requestMatchers("/articles/**", "/token/is-authenticated")
                             .authenticated();
 //                    auth.requestMatchers("/")
 //                            .permitAll();
@@ -57,9 +65,12 @@ public class WebSecurityConfig {
                 )
 
                 .addFilterBefore(
-                        new AlwaysAuthenticatedFilter(),
+//                        new AlwaysAuthenticatedFilter(),
+                        new JwtTokenFilter(tokenUtils),
                         AuthorizationFilter.class
                 )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         ;
 
         // before 6.1

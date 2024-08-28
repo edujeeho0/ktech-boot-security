@@ -33,24 +33,16 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/no-auth", "/", "/token/issue", "/error")
-                            .permitAll();
-                    // 인증이 된 사용자만 허용하는 URL
-                    auth.requestMatchers("/users/my-profile")
-                            .authenticated();
-                    auth.requestMatchers("/users/register")
-                            .anonymous();
-//                    auth.requestMatchers(HttpMethod.POST, "/articles")
-//                            .authenticated();
-//                    auth.requestMatchers(HttpMethod.GET, "/articles")
-//                            .permitAll();
-                    // /articles, /articles/1, /articles/1/update
-                    auth.requestMatchers("/articles/**", "/token/is-authenticated")
-                            .authenticated();
-//                    auth.requestMatchers("/")
-//                            .permitAll();
-//                    auth.requestMatchers("/nobody")
-//                            .denyAll();
+                        auth.requestMatchers("/no-auth", "/", "/token/issue", "/error")
+                                .permitAll();
+                        // 인증이 된 사용자만 허용하는 URL
+                        auth.requestMatchers("/users/my-profile")
+                                .authenticated();
+                        auth.requestMatchers("/users/register")
+                                .anonymous();
+                        // /articles, /articles/1, /articles/1/update
+                        auth.requestMatchers("/articles/**", "/token/is-authenticated")
+                                .authenticated();
                 })
                 // 로그인은 어떤 URL에서 어떤 방식으로 이뤄지는지
                 .formLogin(formLogin -> formLogin

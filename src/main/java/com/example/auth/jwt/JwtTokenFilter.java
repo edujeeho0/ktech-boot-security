@@ -74,13 +74,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // 4-3. 사용자 이름을 바탕으로 Authentication을 생성한다.
         AbstractAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(
-                        new CustomUserDetails(
-                                1L,
-                                username,
-                                jwt,
-                                "",
-                                ""
-                        ),
+                        CustomUserDetails.builder()
+                                .username(username)
+                                .build(),
                         jwt,
                         new ArrayList<>()
                 );

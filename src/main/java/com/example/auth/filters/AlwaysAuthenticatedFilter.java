@@ -31,13 +31,7 @@ public class AlwaysAuthenticatedFilter extends OncePerRequestFilter {
                 .createEmptyContext();
         AbstractAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(
-                        new CustomUserDetails(
-                                1L,
-                                "alex",
-                                "password",
-                                "a@a.a",
-                                "010-abcd-ef01"
-                        ),
+                        null,
                         "password",
                         new ArrayList<>()
                 );

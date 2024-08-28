@@ -40,6 +40,10 @@ public class WebSecurityConfig {
                                 .authenticated();
                         auth.requestMatchers("/users/register")
                                 .anonymous();
+//                        auth.requestMatchers("")
+//                                .hasRole();
+//                        auth.requestMatchers("")
+//                                .hasAuthority();
                         // /articles, /articles/1, /articles/1/update
                         auth.requestMatchers("/articles/**", "/token/is-authenticated")
                                 .authenticated();

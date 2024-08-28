@@ -32,6 +32,7 @@ public class UserService implements UserDetailsService {
                 .encode("password"));
         user1.setEmail("user1@a.a");
         user1.setPhone("010-asdf-zxcv");
+        user1.setAuthorities("ROLE_USER,READ");
         this.repository.save(user1);
     }
 
@@ -56,6 +57,8 @@ public class UserService implements UserDetailsService {
         UserEntity newUser = new UserEntity();
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password));
+        newUser.setAuthorities("ROLE_USER,READ");
+        // => { "ROLE_USER", "READ" }
         repository.save(newUser);
     }
 

@@ -3,6 +3,7 @@ package com.example.auth.config;
 import com.example.auth.filters.AlwaysAuthenticatedFilter;
 import com.example.auth.jwt.JwtTokenFilter;
 import com.example.auth.jwt.JwtTokenUtils;
+import com.example.auth.oauth.OAuth2UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,13 +24,16 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter;
 public class WebSecurityConfig {
     private final JwtTokenUtils tokenUtils;
     private final UserDetailsService detailsService;
+    private final OAuth2UserServiceImpl oAuth2UserService;
 
     public WebSecurityConfig(
             JwtTokenUtils tokenUtils,
-            UserDetailsService detailsService
+            UserDetailsService detailsService,
+            OAuth2UserServiceImpl oAuth2UserService
     ) {
         this.tokenUtils = tokenUtils;
         this.detailsService = detailsService;
+        this.oAuth2UserService = oAuth2UserService;
     }
 
     @Bean
@@ -61,18 +65,23 @@ public class WebSecurityConfig {
                         auth.requestMatchers("/articles/**", "/token/is-authenticated")
                                 .authenticated();
                 })
-                // 로그인은 어떤 URL에서 어떤 방식으로 이뤄지는지
-                .formLogin(formLogin -> formLogin
+//                // 로그인은 어떤 URL에서 어떤 방식으로 이뤄지는지
+//                .formLogin(formLogin -> formLogin
+//                        .loginPage("/users/login")
+//                        .defaultSuccessUrl("/users/my-profile")
+//                        .failureUrl("/users/login?fail")
+//                        .permitAll()
+//                )
+//                .logout(logout -> logout
+//                        .logoutUrl("/users/logout")
+//                        .logoutSuccessUrl("/users/login")
+//                )
+                .oauth2Login(oauth2Login -> oauth2Login
                         .loginPage("/users/login")
-                        .defaultSuccessUrl("/users/my-profile")
-                        .failureUrl("/users/login?fail")
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(oAuth2UserService))
                         .permitAll()
                 )
-                .logout(logout -> logout
-                        .logoutUrl("/users/logout")
-                        .logoutSuccessUrl("/users/login")
-                )
-
                 .addFilterBefore(
 //                        new AlwaysAuthenticatedFilter(),
                         new JwtTokenFilter(

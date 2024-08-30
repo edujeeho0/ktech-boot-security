@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
+//@Component
 public class LogFilter implements Filter {
     @Override
     public void doFilter(

@@ -3,6 +3,7 @@ package com.example.auth.config;
 import com.example.auth.filters.AlwaysAuthenticatedFilter;
 import com.example.auth.jwt.JwtTokenFilter;
 import com.example.auth.jwt.JwtTokenUtils;
+import com.example.auth.oauth.OAuth2SuccessHandler;
 import com.example.auth.oauth.OAuth2UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,15 +26,18 @@ public class WebSecurityConfig {
     private final JwtTokenUtils tokenUtils;
     private final UserDetailsService detailsService;
     private final OAuth2UserServiceImpl oAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     public WebSecurityConfig(
             JwtTokenUtils tokenUtils,
             UserDetailsService detailsService,
-            OAuth2UserServiceImpl oAuth2UserService
+            OAuth2UserServiceImpl oAuth2UserService,
+            OAuth2SuccessHandler oAuth2SuccessHandler
     ) {
         this.tokenUtils = tokenUtils;
         this.detailsService = detailsService;
         this.oAuth2UserService = oAuth2UserService;
+        this.oAuth2SuccessHandler = oAuth2SuccessHandler;
     }
 
     @Bean
@@ -44,7 +48,13 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                        auth.requestMatchers("/no-auth", "/", "/token/issue", "/error")
+                        auth.requestMatchers(
+                                        "/no-auth",
+                                        "/",
+                                        "/token/issue",
+                                        "/error",
+                                        "/token/validate-test"
+                                )
                                 .permitAll();
                         // 인증이 된 사용자만 허용하는 URL
                         auth.requestMatchers("/users/my-profile")
@@ -80,6 +90,7 @@ public class WebSecurityConfig {
                         .loginPage("/users/login")
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(oAuth2UserService))
+                        .successHandler(oAuth2SuccessHandler)
                         .permitAll()
                 )
                 .addFilterBefore(
